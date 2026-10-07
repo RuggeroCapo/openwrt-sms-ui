@@ -82,6 +82,12 @@ function relTime(iso) {
   return shortFmt.format(d);
 }
 
+function validDate(iso) {
+  if (!iso) return null;
+  const d = new Date(iso);
+  return isNaN(d) ? null : d;
+}
+
 function dayLabel(iso) {
   const d = new Date(iso);
   const diff = (dayStart(new Date()) - dayStart(d)) / 86400000;
@@ -303,7 +309,7 @@ function renderThread() {
     }
   });
 
-  main.replaceChildren(head, newTo, body, form);
+  main.replaceChildren(...[head, newTo, body, form].filter(Boolean));
   if (!isNew) renderMessages(body, true);
   update();
 }
@@ -315,7 +321,8 @@ function renderMessages(container, forceBottom = false) {
   const frag = document.createDocumentFragment();
   let lastDay = "";
   for (const m of conv.msgs) {
-    if (m.timestamp) {
+    const when = validDate(m.timestamp);
+    if (when) {
       const day = dayLabel(m.timestamp);
       if (day !== lastDay) { lastDay = day; frag.append(h("div", { class: "day" }, day)); }
     }
@@ -325,7 +332,7 @@ function renderMessages(container, forceBottom = false) {
       h("div", { class: "bubble" }, m.text || "(vuoto)"),
       otp ? h("div", { class: "otp" }, h("button", { class: "btn btn-sm", type: "button", onclick: () => copy(otp) }, icon("copy"), `Copia ${otp}`)) : null,
       h("div", { class: "meta" },
-        m.timestamp ? h("span", {}, timeFmt.format(new Date(m.timestamp))) : null,
+        when ? h("span", {}, timeFmt.format(when)) : null,
         pending ? h("span", { class: "msg-state" }, m.state === "sending" ? "In invio" : "In attesa") : null,
         h("span", { class: "msg-actions" },
           deleteButton("", "Eliminare?", () => deleteIds([m.id], "Messaggio eliminato."), true)))));

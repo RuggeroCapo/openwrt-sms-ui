@@ -94,6 +94,21 @@ def field(output: str, name: str) -> str:
     return m.group(1).strip().strip("'") if m else ""
 
 
+def normalize_timestamp(raw: str) -> str:
+    """mmcli emette offset come '+02' o '+0200': JS richiede '+02:00'."""
+    raw = raw.strip()
+    m = re.fullmatch(r"(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}(?::\d{2})?)(?:[.,]\d+)?(Z|[+-]\d{2}(?::?\d{2})?)?", raw)
+    if not m:
+        return ""
+    date, clock, tz = m.groups()
+    if len(clock) == 5:
+        clock += ":00"
+    if tz and tz != "Z":
+        digits = tz[1:].replace(":", "")
+        tz = f"{tz[0]}{digits[:2]}:{digits[2:] or '00'}"
+    return f"{date}T{clock}{tz or ''}"
+
+
 def parse_detail(sms_id: str, output: str) -> dict:
     try:
         sms = json.loads(output)["sms"]
@@ -109,7 +124,7 @@ def parse_detail(sms_id: str, output: str) -> dict:
         "number": number if number != "--" else "",
         "text": text if text != "--" else "",
         "state": state,
-        "timestamp": stamp if stamp != "--" else "",
+        "timestamp": normalize_timestamp(stamp),
         "outgoing": outgoing,
     }
 
