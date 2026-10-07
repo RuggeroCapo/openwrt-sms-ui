@@ -1,0 +1,23 @@
+manifestVersion: 1.1
+id: router-sms
+category: networking
+name: Router SMS
+version: "1.0.0"
+tagline: Leggi e invia gli SMS della SIM del tuo router
+description: >-
+  Interfaccia web per leggere, inviare ed eliminare gli SMS della SIM nel router.
+  Il router viene interrogato via SSH con mmcli; le credenziali si inseriscono
+  al primo avvio e restano sul tuo server.
+developer: Ruggero
+website: ""
+dependencies: []
+repo: ""
+support: ""
+port: 5000
+gallery: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
+submitter: Ruggero
+submission: ""
+releaseNotes: Prima versione.
