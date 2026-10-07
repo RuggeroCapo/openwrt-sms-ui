@@ -2,17 +2,18 @@
 
 App Flask che legge e invia SMS dal modem di un router (OpenWrt + ModemManager) via SSH.
 
-## Installazione manuale su Umbrel
+## Installazione manuale su Umbrel (standalone)
 
     ssh umbrel@umbrel.local
-    cd ~/umbrel/app-data
-    git clone <URL_REPO> router-sms
-    # aggiornare: cd router-sms && git pull
+    git clone <URL_REPO> ~/umbrel/home/router-sms && cd ~/umbrel/home/router-sms
+    sudo docker compose up -d --build
 
-Poi installa/avvia l'app (`umbrel-app.yml` ha `id: router-sms`, cartella e id devono coincidere).
-Al primo avvio inserisci i dati del router nella schermata di configurazione; vengono salvati
-in `data/config.json` (ignorato da git). Dopo un `git pull` ricostruisci con
-`docker compose build` nella cartella dell'app e riavvia l'app.
+Apri `http://umbrel.local:5080` e inserisci i dati del router (salvati in `data/config.json`,
+ignorato da git). Aggiornare: `git pull && sudo docker compose up -d --build`.
+
+Attenzione: in questa modalita' non c'e' il login di Umbrel, chiunque sia sulla tua LAN
+puo' aprire l'app. `docker-compose.umbrel.yml` e `umbrel-app.yml` servono solo per
+un'installazione come vera app Umbrel (con app proxy).
 
 ## Sviluppo
 
